@@ -19,7 +19,7 @@ Examples
 
 * create simple json schema
 
-```
+```erlang
 1> josser:make_schema([{<<"key">>, <<"value">>}]).
 {ok,[{<<"$schema">>,<<"http://json-schema.org/schema#">>},
      {<<"properties">>,
@@ -32,7 +32,7 @@ Examples
 
 * create json schema with values as metadata
 
-```
+```erlang
 1> josser:make_schema([{<<"key">>, <<"{\"type\": \"integer\", \"min\":0}">>}], [{value_as_metadata, true}]).
 {ok,[{<<"$schema">>,<<"http://json-schema.org/schema#">>},
      {<<"properties">>,
@@ -41,7 +41,7 @@ Examples
 
 * create json schema with custom types (`object` and `array` not yet supported)
 
-```
+```erlang
 1> josser:make_custom_schema([{<<"key">>, <<"{\"type\": \"custom_type\"}">>}], 
                              [{<<"custom_type">>, [{type, integer}, {maximum, 10}]}]).
 {ok,[{<<"$schema">>,<<"http://json-schema.org/schema#">>},
