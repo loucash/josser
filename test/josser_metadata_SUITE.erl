@@ -53,6 +53,22 @@ t_simple_json_types(_Config) ->
               [{<<"key">>,[{<<"type">>,<<"boolean">>}]}]}]
         },
         {
+            [{<<"key">>, <<"{\"type\": \"array\"}">>}],
+
+            [?DEFAULT_SCHEMA, 
+             {<<"type">>, <<"object">>},
+             {<<"properties">>,
+              [{<<"key">>,[{<<"type">>,<<"array">>}]}]}]
+        },
+        {
+            [{<<"key">>, <<"{\"type\": \"object\"}">>}],
+
+            [?DEFAULT_SCHEMA, 
+             {<<"type">>, <<"object">>},
+             {<<"properties">>,
+              [{<<"key">>,[{<<"type">>,<<"object">>}]}]}]
+        },
+        {
             [{<<"key">>, <<"{\"type\": null}">>}],
 
             [?DEFAULT_SCHEMA, 
