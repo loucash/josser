@@ -29,6 +29,14 @@ t_simple_json_types(_Config) ->
               [{<<"key">>,[{<<"type">>,<<"integer">>}]}]}]
         },
         {
+            [{<<"key">>, <<"{\"type\": \"any\"}">>}],
+
+            [?DEFAULT_SCHEMA, 
+             {<<"type">>, <<"object">>},
+             {<<"properties">>,
+              [{<<"key">>,[{<<"type">>,<<"any">>}]}]}]
+        },
+        {
             [{<<"key">>, <<"{\"type\": \"string\"}">>}],
 
             [?DEFAULT_SCHEMA, 

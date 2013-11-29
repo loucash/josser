@@ -30,6 +30,7 @@ validate(TypeDesc, CustomTypes) ->
 -spec validate_simple_type(binary() | null) -> boolean().
 validate_simple_type(<<"object">>) -> true;
 validate_simple_type(<<"array">>) -> true;
+validate_simple_type(<<"any">>) -> true;
 validate_simple_type(<<"string">>) -> true;
 validate_simple_type(<<"integer">>) -> true;
 validate_simple_type(<<"number">>) -> true;
