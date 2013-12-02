@@ -12,18 +12,17 @@
          make_custom_schema/2,
          make_custom_schema/3]).
 
--include("josser.hrl").
-
 -type options()                 :: {additional_properties, boolean()}
                                  | {encode_json, boolean()}
                                  | {value_as_metadata, boolean()}.
 -type option_list()             :: [options()].
--type josser_errors()           :: {missing_type, binary()}
-                                 | {invalid_custom_type_attr, binary()}.
+-type josser_errors()           :: {missing_type, binary()}.
 -type josser_result()           :: {ok, jsx:json_text()}
                                  | {ok, jsx:json_term()}
                                  | {error, josser_errors()}.
--type custom_types()            :: [{binary(), custom_type_values()}].
+-type custom_types()            :: {file, string()} 
+                                 | {json_term, jsx:json_term()}
+                                 | {json_text, jsx:json_text()}.
 
 -export_type([custom_types/0]).
 
@@ -49,12 +48,22 @@ make_schema(JSON, Options) ->
     generate(JSON, [], Options).
 
 -spec make_custom_schema(jsx:json_term(), custom_types()) -> josser_result().
-make_custom_schema(JSON, CustomTypes) ->
+make_custom_schema(JSON, {file, CustomTypesFilePath}) ->
+    {ok, Json} = file:read_file(CustomTypesFilePath),
+    make_custom_schema(JSON, {json_text, Json});
+make_custom_schema(JSON, {json_text, Json}) ->
+    make_custom_schema(JSON, {json_term, jsx:decode(Json)});
+make_custom_schema(JSON, {json_term, CustomTypes}) ->
     generate(JSON, CustomTypes, [{value_as_metadata, true}]).
 
 -spec make_custom_schema(jsx:json_term(), custom_types(), 
                          option_list()) -> josser_result().
-make_custom_schema(JSON, CustomTypes, Options) ->
+make_custom_schema(JSON, {file, CustomTypesFilePath}, Options) ->
+    {ok, Json} = file:read_file(CustomTypesFilePath),
+    make_custom_schema(JSON, {json_text, Json}, Options);
+make_custom_schema(JSON, {json_text, Json}, Options) ->
+    make_custom_schema(JSON, {json_term, jsx:decode(Json)}, Options);
+make_custom_schema(JSON, {json_term, CustomTypes}, Options) ->
     generate(JSON, CustomTypes, [{value_as_metadata, true} | Options]).
 
 

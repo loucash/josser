@@ -1,0 +1,8 @@
+{
+    "custom_type1": {
+        "type": "boolean", 
+        "enum": [true], 
+        "required": true, 
+        "description": "desc"
+    }
+}

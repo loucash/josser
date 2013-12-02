@@ -43,12 +43,30 @@ Examples
 
 ```erlang
 1> josser:make_custom_schema([{<<"key">>, <<"{\"type\": \"custom_type\"}">>}], 
-                             [{<<"custom_type">>, [{type, integer}, {maximum, 10}]}]).
+                             {json_term, [{<<"custom_type">>, [{<<"type">>, <<"integer">>}, {<<"maximum">>, 10}]}]}).
 {ok,[{<<"$schema">>,<<"http://json-schema.org/schema#">>},
      {<<"properties">>,
       [{<<"key">>,
         [{<<"type">>,<<"integer">>},{<<"maximum">>,10}]}]}]}
 ```
+
+`make_custom_schema` get `CustomTypes` argument as:
+
+   * `{file, "path/to/file.json"}`
+
+   * or:
+
+     ```
+    {json_text, <<"{\"custom_type\": {\"type\": \"string\", \"description\": \"description\"}, 
+
+                                      \"other_custom_type\": {...}}">>}
+     ```
+
+   * or:
+
+     ```
+    {json_term, [{<<"custom_type">>, [{<<"type">>, <<"string">>}]}]}
+     ```
 
 Contributing
 ------------
