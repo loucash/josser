@@ -13,7 +13,8 @@ all() ->
      t_custom_type_integer,
      t_custom_type_string,
      t_custom_type_number,
-     t_undefined_custom_type
+     t_undefined_custom_type,
+     t_multiple_types
     ].
 
 t_simple_json_types(_Config) ->
@@ -171,4 +172,50 @@ t_undefined_custom_type(_Config) ->
     {error, {missing_type, _CType}} = josser:make_custom_schema(
                 Json, 
                 {json_term, [{<<"custom_type2">>, [{<<"type">>, <<"boolean">>}]}]}),
+    ok.
+
+t_multiple_types(Config) ->
+    TestData = [
+        {
+            [{<<"key">>, <<"{\"type\": [\"integer\", \"string\",\"object\",\"integer\"]}">>}],
+
+            [?DEFAULT_SCHEMA, 
+                  {<<"type">>,<<"object">>},
+                  {<<"properties">>,
+                   [{<<"key">>,[{<<"type">>,[<<"string">>,
+                                             <<"object">>,
+                                             <<"integer">>]}]}]}]
+        },
+        {
+            [{<<"key">>, <<"{\"type\": [\"string\", \"string\"]}">>}],
+
+            [?DEFAULT_SCHEMA, 
+                  {<<"type">>,<<"object">>},
+                  {<<"properties">>,
+                   [{<<"key">>,[{<<"type">>,<<"string">>}]}]}]
+        },
+        {
+            [{<<"key">>, <<"{\"type\": [\"integer\", \"ct1\"], \"enum\": [1,2,3], \"description\": \"d\"}">>}],
+
+            [?DEFAULT_SCHEMA, 
+                  {<<"type">>,<<"object">>},
+                  {<<"properties">>,
+                   [{<<"key">>,[{<<"description">>, <<"d">>},
+                                {<<"enum">>, [4,1,2,3]},
+                                {<<"type">>,<<"integer">>}
+                                ]}]}]
+        }
+    ],
+    lists:foreach(
+      fun({Json, JsonSchema}) ->
+        {ok, JS} = josser:make_custom_schema(
+                     Json, 
+                     {json_term, 
+                       [{<<"ct1">>, [{<<"type">>, <<"integer">>}, 
+                                     {<<"enum">>, [4]},
+                                     {<<"description">>, <<"e">>}]}]}),
+        true = jsx:is_term(JS),
+        JsonSchema = JS
+      end,
+      TestData),
     ok.
