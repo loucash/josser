@@ -27,7 +27,7 @@
 -export_type([custom_types/0]).
 
 -record(options, {
-          custom_types = []         :: custom_types(), 
+          custom_types = []         :: jsx:json_term(), 
           additional_properties     :: boolean(),
           encode_json = false       :: boolean(),
           value_as_metadata = false :: boolean()
@@ -71,14 +71,14 @@ make_custom_schema(JSON, {json_term, CustomTypes}, Options) ->
 %%% Internal functions
 %%%===================================================================
 
--spec generate(jsx:json_term(), custom_types(), option_list()) -> 
+-spec generate(jsx:json_term(), jsx:json_term(), option_list()) -> 
     josser_result().
 generate(JSON, CustomTypes, Options) ->
     Opt = lists:foldl(fun set_prop/2, 
                       #options{custom_types=CustomTypes}, 
                       Options),
     try traverse(JSON, Opt) of
-        JsonSchema -> {ok, JsonSchema}
+        {ok, JsonSchema} -> {ok, JsonSchema}
     catch
         Error -> Error
     end.
@@ -90,8 +90,8 @@ traverse(JSON, Opt) ->
     Result = traverse_json(JSON, Opt),
     ResultWithSchema = [?DEFAULT_SCHEMA | Result],
     case encode_json(Opt) of
-        true -> jsx:encode(ResultWithSchema);
-        false -> ResultWithSchema
+        true -> {ok, jsx:encode(ResultWithSchema)};
+        false -> {ok, ResultWithSchema}
     end.
 
 -spec traverse_json(jsx:json_term(), #options{}) -> jsx:json_term() 

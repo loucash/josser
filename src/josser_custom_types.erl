@@ -13,7 +13,7 @@
 %%% API
 %%%===================================================================
 
--spec validate(jsx:json_term(), josser:custom_types()) -> 
+-spec validate(jsx:json_term(), jsx:json_term()) -> 
     {ok, jsx:json_term()} | no_return().
 validate(TypeDesc, CustomTypes) ->
     Type = proplists:get_value(<<"type">>, TypeDesc),
@@ -64,7 +64,7 @@ merge_definitions([{Key, Value} | Tail], TypeDef) ->
             merge_definitions(Tail, TypeDef)
     end.
 
--spec validate_type(list(binary()) | binary(), josser:custom_types()) -> list().
+-spec validate_type(list(binary()) | binary(), jsx:json_term()) -> list().
 validate_type(Type, CustomTypes) ->
     validate_type(Type, CustomTypes, []).
 
@@ -90,8 +90,8 @@ validate_simple_type(<<"boolean">>) -> true;
 validate_simple_type(null) -> true;
 validate_simple_type(_Other) -> false.
 
--spec validate_custom_type(binary(), josser:custom_types()) ->
-    {ok, jsx:json_term()} | no_return().
+-spec validate_custom_type(binary(), jsx:json_term()) ->
+    jsx:json_term() | no_return().
 validate_custom_type(Type, CustomTypes) ->
     case proplists:get_value(Type, CustomTypes) of
         undefined -> erlang:throw({error, {missing_type, Type}});
