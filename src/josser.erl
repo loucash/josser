@@ -141,13 +141,13 @@ generate_properties(Json, Opt) ->
 -spec value_type(jsx:json_term(), #options{}) -> jsx:json_term() | no_return().
 value_type(Value, Opt) when is_list(Value) ->
     traverse_json(Value, Opt);
-value_type(Value, #options{value_as_metadata=false}) when is_integer(Value) ->
+value_type(Value, _Opt) when is_integer(Value) ->
     [{<<"type">>, <<"integer">>}];
-value_type(Value, #options{value_as_metadata=false}) when is_float(Value) ->
+value_type(Value, _Opt) when is_float(Value) ->
     [{<<"type">>, <<"number">>}];
-value_type(Value, #options{value_as_metadata=false}) when is_boolean(Value) ->
+value_type(Value, _Opt) when is_boolean(Value) ->
     [{<<"type">>, <<"boolean">>}];
-value_type(Value, #options{value_as_metadata=false}) when Value =:= null ->
+value_type(Value, _Opt) when Value =:= null ->
     [{<<"type">>, <<"null">>}];
 value_type(Value, #options{value_as_metadata=false}) when is_binary(Value) ->
     [{<<"type">>, <<"string">>}];
