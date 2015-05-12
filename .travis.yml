@@ -6,4 +6,5 @@ script: make all && make $TEST_SUITE
 
 language: erlang
 otp_release:
+    - 17.1
     - R16B02

@@ -41,16 +41,8 @@ distclean:
 dialyze:
 	@dialyzer $(DIALYZER_OPTS) -r ebin
 
-dialyze/dialyzer_plt:
-	mkdir -p dialyze
-	curl -L "https://github.com/esl/erlang-plts/blob/master/plts/travis-erlang-r16b02.plt?raw=true" -o dialyze/dialyzer_plt
-	cp dialyze/dialyzer_plt /home/travis/.dialyzer_plt
-
-/home/travis/.dialyzer_plt:
-	cp dialyze/dialyzer_plt /home/travis/.dialyzer_plt
-
-dialyzer-travis: dialyze/dialyzer_plt /home/travis/.dialyzer_plt
-	@dialyzer $(DIALYZER_OPTS) -r ebin
+dialyzer-travis:
+	@dialyzer --plt plts/travis-erlang-$(TRAVIS_OTP_RELEASE).plt $(DIALYZER_OPTS) -r ebin
 
 start:
 	$(ERL) -sname $(PROJECT) $(EPATH) -s $(PROJECT)
