@@ -5,7 +5,7 @@
 %%% @end
 %%%-------------------------------------------------------------------
 -module(josser).
--author('Łukasz Biedrycki <lukasz.biedrycki@gmail.com>').
+-author('Lukasz Biedrycki <lukasz.biedrycki@gmail.com>').
 
 -export([make_schema/1,
          make_schema/2,

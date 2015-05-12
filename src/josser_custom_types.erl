@@ -5,7 +5,7 @@
 %%% @end
 %%%-------------------------------------------------------------------
 -module(josser_custom_types).
--author('Łukasz Biedrycki <lukasz.biedrycki@gmail.com>').
+-author('Lukasz Biedrycki <lukasz.biedrycki@gmail.com>').
 
 -export([validate/2]).
 
@@ -13,7 +13,7 @@
 %%% API
 %%%===================================================================
 
--spec validate(jsx:json_term(), jsx:json_term()) -> 
+-spec validate(jsx:json_term(), jsx:json_term()) ->
     {ok, jsx:json_term()} | no_return().
 validate(TypeDesc, CustomTypes) ->
     Type = proplists:get_value(<<"type">>, TypeDesc),
@@ -30,7 +30,7 @@ merge_definitions([], TypeDef) ->
 merge_definitions([{<<"type">>, Type} | Tail], TypeDef) ->
     T = proplists:get_value(<<"type">>, TypeDef),
     case T of
-        Type -> 
+        Type ->
             merge_definitions(Tail, TypeDef);
         Type2 when is_binary(Type2) ->
             TypeDef2 = lists:keyreplace(<<"type">>, 1, TypeDef, {<<"type">>, [Type, Type2]}),
@@ -51,14 +51,14 @@ merge_definitions([{<<"enum">>, Enum} | Tail], TypeDef) ->
     case Enum2 of
         undefined ->
             merge_definitions(Tail, [{<<"enum">>, Enum} | TypeDef]);
-        _ -> 
+        _ ->
             TypeDef2 = lists:keyreplace(<<"enum">>, 1, TypeDef, {<<"enum">>, lists:append(Enum, Enum2)}),
             merge_definitions(Tail, TypeDef2)
     end;
 merge_definitions([{Key, Value} | Tail], TypeDef) ->
     Val2 = proplists:get_value(Key, TypeDef),
     case Val2 of
-        undefined -> 
+        undefined ->
             merge_definitions(Tail, [{Key, Value} | TypeDef]);
         _ ->
             merge_definitions(Tail, TypeDef)
@@ -78,7 +78,7 @@ validate_type([Type|Tail], CustomTypes, Acc) ->
         false -> validate_custom_type(Type, CustomTypes)
     end,
     validate_type(Tail, CustomTypes, [TypeDef | Acc]).
-    
+
 -spec validate_simple_type(binary() | null) -> boolean().
 validate_simple_type(<<"object">>) -> true;
 validate_simple_type(<<"array">>) -> true;
