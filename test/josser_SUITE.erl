@@ -4,7 +4,7 @@
 
 -include_lib("common_test/include/ct.hrl").
 
--define(DEFAULT_SCHEMA, {<<"$schema">>, <<"http://json-schema.org/schema#">>}).
+-define(DEFAULT_SCHEMA, {<<"$schema">>, <<"http://json-schema.org/draft-03/schema#">>}).
 
 all() ->
     [
@@ -17,29 +17,29 @@ all() ->
 
 t_simple_json_types(_Config) ->
     TestData = [
-        {[{<<"key">>, <<"value">>}], 
-         [?DEFAULT_SCHEMA, 
-          {<<"type">>, <<"object">>}, 
+        {[{<<"key">>, <<"value">>}],
+         [?DEFAULT_SCHEMA,
+          {<<"type">>, <<"object">>},
           {<<"properties">>,[{<<"key">>,[{<<"type">>,<<"string">>}]}]}]},
 
-        {[{<<"key">>, 1}], 
-         [?DEFAULT_SCHEMA, 
-          {<<"type">>, <<"object">>}, 
+        {[{<<"key">>, 1}],
+         [?DEFAULT_SCHEMA,
+          {<<"type">>, <<"object">>},
           {<<"properties">>,[{<<"key">>,[{<<"type">>,<<"integer">>}]}]}]},
 
-        {[{<<"key">>, true}], 
-         [?DEFAULT_SCHEMA, 
-          {<<"type">>, <<"object">>}, 
+        {[{<<"key">>, true}],
+         [?DEFAULT_SCHEMA,
+          {<<"type">>, <<"object">>},
           {<<"properties">>,[{<<"key">>,[{<<"type">>,<<"boolean">>}]}]}]},
 
-        {[{<<"key">>, 3.14}], 
-         [?DEFAULT_SCHEMA, 
-          {<<"type">>, <<"object">>}, 
+        {[{<<"key">>, 3.14}],
+         [?DEFAULT_SCHEMA,
+          {<<"type">>, <<"object">>},
           {<<"properties">>,[{<<"key">>,[{<<"type">>,<<"number">>}]}]}]},
 
-        {[{<<"key">>, null}], 
-         [?DEFAULT_SCHEMA, 
-          {<<"type">>, <<"object">>}, 
+        {[{<<"key">>, null}],
+         [?DEFAULT_SCHEMA,
+          {<<"type">>, <<"object">>},
           {<<"properties">>,[{<<"key">>,[{<<"type">>,<<"null">>}]}]}]}
     ],
     lists:foreach(
@@ -54,9 +54,9 @@ t_simple_json_types(_Config) ->
 
 t_nested_objects(_Config) ->
     TestData = [
-        {[{<<"key">>, [{<<"subkey">>, <<"value">>}]}], 
-         [?DEFAULT_SCHEMA, 
-          {<<"type">>, <<"object">>}, 
+        {[{<<"key">>, [{<<"subkey">>, <<"value">>}]}],
+         [?DEFAULT_SCHEMA,
+          {<<"type">>, <<"object">>},
           {<<"properties">>,
             [{<<"key">>, [{<<"type">>, <<"object">>},
                           {<<"properties">>,[{<<"subkey">>,[{<<"type">>,<<"string">>}]}]}]}]}]}
@@ -86,8 +86,8 @@ t_simple_json_types_no_validation(_Config) ->
 
 t_nested_arrays(_Config) ->
     TestData = [
-        {[{<<"key">>, [[{<<"subkey">>, <<"value">>}]]}], 
-         [?DEFAULT_SCHEMA, 
+        {[{<<"key">>, [[{<<"subkey">>, <<"value">>}]]}],
+         [?DEFAULT_SCHEMA,
           {<<"type">>, <<"object">>},
           {<<"properties">>,
             [{<<"key">>,
@@ -98,10 +98,10 @@ t_nested_arrays(_Config) ->
                     [{<<"subkey">>,[{<<"type">>,<<"string">>}]}]}]]}]}]}]},
 
         {[{<<"key">>, [1,2,3]}],
-         [?DEFAULT_SCHEMA, 
+         [?DEFAULT_SCHEMA,
           {<<"type">>, <<"object">>},
           {<<"properties">>,
-            [{<<"key">>, 
+            [{<<"key">>,
               [{<<"type">>, <<"array">>},
                {<<"items">>,
                 [[{<<"type">>,<<"integer">>}],
@@ -109,7 +109,7 @@ t_nested_arrays(_Config) ->
                  [{<<"type">>,<<"integer">>}]]}]}]}]},
 
         {[1,2,3],
-         [?DEFAULT_SCHEMA, 
+         [?DEFAULT_SCHEMA,
           {<<"type">>, <<"array">>},
           {<<"items">>,
             [[{<<"type">>,<<"integer">>}],
@@ -117,7 +117,7 @@ t_nested_arrays(_Config) ->
              [{<<"type">>,<<"integer">>}]]}]},
 
         {[3.14,true,null,<<"str">>],
-         [?DEFAULT_SCHEMA, 
+         [?DEFAULT_SCHEMA,
           {<<"type">>, <<"array">>},
           {<<"items">>,
             [[{<<"type">>,<<"number">>}],
@@ -137,17 +137,17 @@ t_nested_arrays(_Config) ->
     ok.
 
 t_options(_Config) ->
-    Json = [{<<"key">>, <<"value">>}], 
+    Json = [{<<"key">>, <<"value">>}],
     {ok, JsonSchema} = josser:make_schema(Json,[{additional_properties, false},
                                                 {encode_json, true}]),
-    <<"{\"$schema\":\"http://json-schema.org/schema#\","
+    <<"{\"$schema\":\"http://json-schema.org/draft-03/schema#\","
        "\"additionalProperties\":false,\"type\":\"object\","
        "\"properties\":{\"key\":{\"type\":\"string\"}}}">> = JsonSchema,
     true = jsx:is_term(JsonSchema),
 
     {ok, JsonSchema1} = josser:make_schema(Json,[{additional_properties, true},
                                                  {encode_json, true}]),
-    <<"{\"$schema\":\"http://json-schema.org/schema#\","
+    <<"{\"$schema\":\"http://json-schema.org/draft-03/schema#\","
        "\"additionalProperties\":true,\"type\":\"object\","
        "\"properties\":{\"key\":{\"type\":\"string\"}}}">> = JsonSchema1,
     true = jsx:is_term(JsonSchema1),

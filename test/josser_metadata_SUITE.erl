@@ -4,7 +4,7 @@
 
 -include_lib("common_test/include/ct.hrl").
 
--define(DEFAULT_SCHEMA, {<<"$schema">>, <<"http://json-schema.org/schema#">>}).
+-define(DEFAULT_SCHEMA, {<<"$schema">>, <<"http://json-schema.org/draft-03/schema#">>}).
 
 all() ->
     [
@@ -139,7 +139,7 @@ t_custom_type_number(Config) ->
                         ?config(data_dir, Config), 
                         "custom_type_number.json"),
     Json = [{<<"key">>, <<"{\"type\": \"custom_type1\"}">>}], 
-    JsonSchema = <<"{\"$schema\":\"http://json-schema.org/schema#\","
+    JsonSchema = <<"{\"$schema\":\"http://json-schema.org/draft-03/schema#\","
                     "\"type\":\"object\",\"properties\":{\"key\":{\"type\":\"number\"}}}">>,
     {ok, JS} = josser:make_custom_schema(
                 Json, {file, CustomTypesFile}, [{encode_json, true}]),

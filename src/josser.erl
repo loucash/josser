@@ -7,7 +7,7 @@
 -module(josser).
 -author('Łukasz Biedrycki <lukasz.biedrycki@gmail.com>').
 
--export([make_schema/1, 
+-export([make_schema/1,
          make_schema/2,
          make_custom_schema/2,
          make_custom_schema/3]).
@@ -20,20 +20,20 @@
 -type josser_result()           :: {ok, jsx:json_text()}
                                  | {ok, jsx:json_term()}
                                  | {error, josser_errors()}.
--type custom_types()            :: {file, string()} 
+-type custom_types()            :: {file, string()}
                                  | {json_term, jsx:json_term()}
                                  | {json_text, jsx:json_text()}.
 
 -export_type([custom_types/0]).
 
 -record(options, {
-          custom_types = []         :: jsx:json_term(), 
+          custom_types = []         :: jsx:json_term(),
           additional_properties     :: boolean(),
           encode_json = false       :: boolean(),
           value_as_metadata = false :: boolean()
          }).
 
--define(DEFAULT_SCHEMA, {<<"$schema">>, <<"http://json-schema.org/schema#">>}).
+-define(DEFAULT_SCHEMA, {<<"$schema">>, <<"http://json-schema.org/draft-03/schema#">>}).
 
 %%%===================================================================
 %%% API
@@ -56,7 +56,7 @@ make_custom_schema(JSON, {json_text, Json}) ->
 make_custom_schema(JSON, {json_term, CustomTypes}) ->
     generate(JSON, CustomTypes, [{value_as_metadata, true}]).
 
--spec make_custom_schema(jsx:json_term(), custom_types(), 
+-spec make_custom_schema(jsx:json_term(), custom_types(),
                          option_list()) -> josser_result().
 make_custom_schema(JSON, {file, CustomTypesFilePath}, Options) ->
     {ok, Json} = file:read_file(CustomTypesFilePath),
@@ -71,11 +71,11 @@ make_custom_schema(JSON, {json_term, CustomTypes}, Options) ->
 %%% Internal functions
 %%%===================================================================
 
--spec generate(jsx:json_term(), jsx:json_term(), option_list()) -> 
+-spec generate(jsx:json_term(), jsx:json_term(), option_list()) ->
     josser_result().
 generate(JSON, CustomTypes, Options) ->
-    Opt = lists:foldl(fun set_prop/2, 
-                      #options{custom_types=CustomTypes}, 
+    Opt = lists:foldl(fun set_prop/2,
+                      #options{custom_types=CustomTypes},
                       Options),
     try traverse(JSON, Opt) of
         {ok, JsonSchema} -> {ok, JsonSchema}
@@ -94,16 +94,16 @@ traverse(JSON, Opt) ->
         false -> {ok, ResultWithSchema}
     end.
 
--spec traverse_json(jsx:json_term(), #options{}) -> jsx:json_term() 
+-spec traverse_json(jsx:json_term(), #options{}) -> jsx:json_term()
                                                   | no_return().
 traverse_json([H|_T]=JSON, Opt) when is_tuple(H) ->
     Properties = generate_properties(JSON, Opt),
-    JSONObject = [{<<"type">>, <<"object">>}, 
+    JSONObject = [{<<"type">>, <<"object">>},
                   {<<"properties">>, Properties}],
     apply_additional_parameters(Opt, JSONObject);
 traverse_json(JSON, Opt) when is_list(JSON) ->
     ArrayItems = generate_items(JSON, Opt),
-    [{<<"type">>, <<"array">>}, 
+    [{<<"type">>, <<"array">>},
      {<<"items">>, ArrayItems}];
 traverse_json(JSON, Opt) ->
     [Result] = generate_items([JSON], Opt),
@@ -119,10 +119,10 @@ apply_additional_parameters(Opt, JsonObject) ->
 
 % @doc
 % generates items for array type
--spec generate_items(jsx:json_term(), #options{}) -> jsx:json_term() 
+-spec generate_items(jsx:json_term(), #options{}) -> jsx:json_term()
                                                    | no_return().
 generate_items(Json, Opt) ->
-    JsonTypes = lists:foldl(fun(J, Acc) -> [value_type(J, Opt) | Acc] end, 
+    JsonTypes = lists:foldl(fun(J, Acc) -> [value_type(J, Opt) | Acc] end,
                             [], Json),
     lists:reverse(JsonTypes).
 
@@ -151,7 +151,7 @@ value_type(Value, _Opt) when Value =:= null ->
     [{<<"type">>, <<"null">>}];
 value_type(Value, #options{value_as_metadata=false}) when is_binary(Value) ->
     [{<<"type">>, <<"string">>}];
-value_type(Value,  #options{value_as_metadata=true, 
+value_type(Value,  #options{value_as_metadata=true,
                           custom_types=CustomTypes}) when is_binary(Value) ->
     TypeDesc = jsx:decode(Value),
     {ok, TypeDescValidated} = josser_custom_types:validate(TypeDesc, CustomTypes),
