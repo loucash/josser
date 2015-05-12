@@ -42,6 +42,7 @@ dialyze:
 	@dialyzer $(DIALYZER_OPTS) -r ebin
 
 dialyzer-travis:
+	kerl list installations
 	@dialyzer --plt plts/travis-erlang-$(TRAVIS_OTP_RELEASE).plt $(DIALYZER_OPTS) -r ebin
 
 start:
