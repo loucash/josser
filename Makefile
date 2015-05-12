@@ -14,28 +14,28 @@ build_plt:
 	@dialyzer --build_plt --apps $(PLT_APPS)
 
 compile:
-	@rebar compile
+	@./rebar compile
 
 configure:
-	@rebar get-deps compile
+	@./rebar get-deps compile
 
 console:
 	$(ERL) -sname $(PROJECT) $(EPATH)
 
 deps:
-	@rebar get-deps update-deps
+	@./rebar get-deps update-deps
 
 doc:
-	@rebar skip_deps=true doc
+	@./rebar skip_deps=true doc
 
 clean:
-	@rebar skip_deps=true clean
+	@./rebar skip_deps=true clean
 
 depclean:
-	@rebar clean
+	@./rebar clean
 
 distclean:
-	@rebar clean delete-deps
+	@./rebar clean delete-deps
 	@rm -rf logs
 
 dialyze:
@@ -56,7 +56,7 @@ start:
 	$(ERL) -sname $(PROJECT) $(EPATH) -s $(PROJECT)
 
 test:
-	@rebar skip_deps=true ct verbose=1
+	@./rebar skip_deps=true ct verbose=1
 
 test-console: test
 	$(ERL) -sname $(PROJECT)_test $(TEST_EPATH)
