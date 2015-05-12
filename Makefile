@@ -1,4 +1,4 @@
-PROJECT := jesgen
+PROJECT := josser
 
 ERL := erl
 EPATH = -pa ebin -pz deps/*/ebin
@@ -8,8 +8,7 @@ DIALYZER_OPTS= -Wno_undefined_callbacks --fullpath
 
 .PHONY: all build_plt compile configure console deps doc clean depclean distclean dialyze release telstart test test-console
 
-all:
-	@rebar skip_deps=true compile
+all: deps compile
 
 build_plt:
 	@dialyzer --build_plt --apps $(PLT_APPS)
@@ -40,6 +39,17 @@ distclean:
 	@rm -rf logs
 
 dialyze:
+	@dialyzer $(DIALYZER_OPTS) -r ebin
+
+dialyze/dialyzer_plt:
+	mkdir -p dialyze
+	curl -L "https://github.com/esl/erlang-plts/blob/master/plts/travis-erlang-r16b02.plt?raw=true" -o dialyze/dialyzer_plt
+	cp dialyze/dialyzer_plt /home/travis/.dialyzer_plt
+
+/home/travis/.dialyzer_plt:
+	cp dialyze/dialyzer_plt /home/travis/.dialyzer_plt
+
+dialyzer-travis: dialyze/dialyzer_plt /home/travis/.dialyzer_plt
 	@dialyzer $(DIALYZER_OPTS) -r ebin
 
 start:

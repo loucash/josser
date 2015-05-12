@@ -1,6 +1,8 @@
 JoSSER - JSon Schema Generator ERlang
 ===========================
 
+[![Build Status](https://travis-ci.org/loucash/josser.svg?branch=master)](https://travis-ci.org/loucash/josser)
+
 JoSSER is a library in Erlang to generate Json Schema out of Json. 
 
 * It implements part of [Draft 03] (http://tools.ietf.org/html/draft-zyp-json-schema-03).

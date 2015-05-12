@@ -1,0 +1,9 @@
+env:
+- TEST_SUITE=test
+- TEST_SUITE=dialyzer-travis
+
+script: make all && make $TEST_SUITE
+
+language: erlang
+otp_release:
+    - R16B02
